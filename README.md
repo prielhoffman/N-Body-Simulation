@@ -1,57 +1,169 @@
-# N-Body Simulation Using MPI
+# MPI N-Body Simulation
 
-This repository contains a parallelized C program for simulating a 2D N-body problem using MPI (Message Passing Interface). The simulation models the gravitational interactions of 992 stars in a square domain, with the computation of forces and movements performed in parallel across multiple processes.
+A **parallel N-body simulation in C using MPI**, modeling 2D gravitational interactions between hundreds of bodies and measuring the performance of distributed computation across multiple processes.
 
-## Overview
+This project demonstrates **parallel programming**, **numerical simulation**, and **performance analysis** in a high-computation scientific workload.
 
-The program simulates the gravitational interactions of stars in a 2D space, using the naive O(n²) approach to compute forces between all pairs of stars. Initial positions and velocities are generated randomly, and the simulation runs for a specified number of time steps. Performance measurements are conducted to analyze the efficiency and effectiveness of parallel execution using MPI.
+## Tech Stack
 
-## Key Features
+- **Language:** C
+- **Parallel Framework:** MPI
+- **Concepts:** parallel computing, distributed computation, simulation, numerical methods, performance analysis
 
-- **Parallel Computation**: Utilizes MPI to parallelize the simulation of gravitational interactions among stars.
-- **Initial Conditions**: Randomly generates positions and velocities for 992 stars within a defined square domain.
-- **Gravitational Calculation**: Computes gravitational forces and updates star positions based on Newtonian physics.
-- **Domain Handling**: Includes a strategy for handling stars exiting the simulation domain (e.g., reflecting back or wrapping around).
-- **Performance Measurement**: Assesses the performance of the parallel program on “hobbit” nodes with varying numbers of processes.
+## What the Project Does
 
-## How It Works
+The project simulates the gravitational interaction of **992 bodies** in a 2D domain.
 
-1. **Initial Setup**:
-    - **Positions**: Randomly generate initial positions for 992 stars within a 100 light-year by 100 light-year domain.
-    - **Velocities**: Assign initial velocities between 0.5v and 1.5v, where v is the average speed (200 km/sec), with uniform direction distributions.
+Each body affects every other body according to Newtonian gravity, and the system evolves over time by repeatedly:
 
-2. **Simulation**:
-    - **Gravitational Force Calculation**: For each star, compute gravitational forces exerted by every other star using Newton’s law of gravitation.
-    - **Position Update**: Update positions and velocities of stars based on the computed forces.
-    - **Domain Handling**: Implement a strategy for stars exiting the domain (e.g., reflection or wrapping).
+- computing gravitational forces
+- updating velocities
+- updating positions
+- handling bodies that leave the simulation domain
 
-3. **Execution**:
-    - **Time Steps**: Choose an appropriate time step and total number of time steps to ensure the simulation runs for more than 2 minutes.
-    - **Double Precision**: Use double precision for physical variables to ensure accurate computations.
+The force calculation follows the naive **O(n²)** approach, making it computationally expensive and a strong candidate for parallelization with MPI. :contentReference[oaicite:1]{index=1}
 
-4. **Performance Measurement**:
-    - **Execution Time**: Measure the execution time using MPI functions on the VM platform.
-    - **Analysis**: Evaluate performance metrics such as speedup and efficiency for different numbers of MPI processes.
+## Main Features
 
-## Running the Program
+- parallel N-body simulation in C
+- MPI-based distribution of computation
+- 2D gravitational interaction model
+- random initialization of positions and velocities
+- iterative time-step simulation
+- handling of bodies leaving the simulation domain
+- performance measurement for different process counts
+- analysis of speedup and efficiency
 
-### 1. Compile the Program:
+## Simulation Model
+
+The simulation models a set of bodies moving under mutual gravitational attraction.
+
+### Initial Conditions
+
+The project initializes:
+
+- **992 stars**
+- positions inside a 2D square domain
+- random velocities within a defined range
+
+The system then evolves over a sequence of time steps using double-precision calculations. :contentReference[oaicite:2]{index=2}
+
+### Force Computation
+
+For each body, the program computes the total gravitational effect of all other bodies.
+
+Because every body interacts with every other body, the baseline computation cost is **quadratic** in the number of bodies.
+
+This makes the simulation a useful benchmark for parallel execution. :contentReference[oaicite:3]{index=3}
+
+### State Update
+
+After computing forces, the simulation updates:
+
+- body velocities
+- body positions
+
+This process is repeated for multiple time steps to simulate the system over time. :contentReference[oaicite:4]{index=4}
+
+### Domain Handling
+
+The implementation includes logic for bodies that move outside the simulation domain, such as reflection or wrapping behavior, depending on the chosen strategy. :contentReference[oaicite:5]{index=5}
+
+## Parallelization
+
+The project uses **MPI** to distribute the computation across multiple processes.
+
+Parallel execution allows the expensive force calculations to be shared between processes, making it possible to reduce runtime and study the scalability of the simulation.
+
+This project is especially useful for understanding how compute-heavy numerical problems behave under distributed execution.
+
+## What I Implemented
+
+This project focused on combining scientific simulation with parallel performance analysis.
+
+Key implementation areas included:
+
+- modeling 2D gravitational interactions
+- implementing iterative state updates
+- parallelizing the computation with MPI
+- handling initialization of simulation state
+- using double precision for numerical calculations
+- measuring runtime under different process counts
+- analyzing speedup and efficiency of the parallel program
+
+## Why This Project Matters
+
+This project demonstrates practical understanding of:
+
+- MPI-based parallel programming
+- distributed computation for compute-intensive workloads
+- numerical simulation in C
+- the performance impact of O(n²) algorithms
+- measuring scalability, speedup, and efficiency
+- structuring scientific computation for parallel execution
+
+It is a strong technical project because it combines low-level C programming, parallel systems concepts, and quantitative performance evaluation.
+
+## Performance Analysis
+
+The project measures execution time for different numbers of MPI processes and uses the results to evaluate:
+
+- runtime improvement
+- speedup
+- efficiency
+
+This turns the project from a pure simulation into a performance-oriented parallel computing exercise. :contentReference[oaicite:6]{index=6}
+
+## How to Run
+
+Compile the program:
 
 ```bash
 mpicc -o nbody nbody.c
 ```
 
-### 2. Execute the Program with different numbers of MPI processes:
+Run the simulation:
 
 ```bash
-mpirun -np [number_of_processes] ./nbody
+mpirun -np <number_of_processes> ./nbody
 ```
-Example for 4 processes:
+
+Example:
+
 ```bash
 mpirun -np 4 ./nbody
 ```
 
-## Notes
-* Ensure that MPI is properly installed and configured on your system.
-* The choice of time step and total number of steps should ensure a simulation duration of over 2 minutes.
-* Decide on an appropriate strategy for handling stars that exit the domain.
+Make sure MPI is installed and configured correctly in your environment before compiling and running the program. :contentReference[oaicite:7]{index=7}
+
+## Core Concepts Practiced
+
+- MPI
+- parallel computing
+- distributed processing
+- scientific simulation
+- N-body modeling
+- performance measurement
+- speedup and efficiency analysis
+- C programming for high-compute workloads
+
+## Key Takeaways
+
+Through this project, I strengthened my understanding of:
+
+- how to parallelize compute-heavy simulations
+- how O(n²) workloads behave under distributed execution
+- how to evaluate scalability using runtime, speedup, and efficiency
+- how to structure numerical simulation code in C
+- how MPI can be used to coordinate parallel scientific computation
+
+## Future Improvements
+
+Possible next steps for the project:
+
+- compare naive and optimized force-computation strategies
+- visualize body movement over time
+- log performance results more systematically
+- test larger body counts and longer simulations
+- compare scaling behavior across more process counts
+- add charts summarizing speedup and efficiency results
